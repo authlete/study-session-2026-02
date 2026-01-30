@@ -10,9 +10,9 @@
 
 - git: リポジトリをクローンするために必要です。
 - Node.js runtime (>= 18): サンプルの動作に必要です。
-- [ngrok CLI](https://ngrok.com/download): 認可サーバーを HTTPS で公開するために必要です。
+- [ngrok CLI](https://ngrok.com/download): 認可サーバーを HTTPS で公開するために必要です。他のツール、たとえば GitHub Codespaces のポートフォワーディングなどを利用しても構いません。
 - [Visual Studio Code](https://code.visualstudio.com/): MCP サーバーに接続するためのクライアントとして利用します。コードの実装はお好きなエディタで実装して構いません。
-- [GitHub Copilot](https://github.com/features/copilot/) のフリープラン (またはそれ以上のプラン) へのサインアップ: VS Code と MCP サーバーの接続確認に利用します。CIMD に対応した他のクライアントでも問題ないです。
+- [GitHub Copilot](https://github.com/features/copilot/) のフリープラン (またはそれ以上のプラン) へのサインアップ: VS Code と MCP サーバーの接続確認に利用します。CIMD に対応した他のクライアントでも構いません。
 
 ### Node.js のインストールと動作確認
 
