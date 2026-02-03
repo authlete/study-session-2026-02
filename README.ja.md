@@ -27,8 +27,8 @@ winget install "Node.js LTS"
 インストール後、本リポジトリをクローンし、モックサーバーを起動します。
 
 ```sh
-git clone https://github.com/watahani/authlete-study-session-2026-02.git
-cd authlete-study-sessoin-2026-02
+git clone https://github.com/authlete/study-session-2026-02.git
+cd study-sessoin-2026-02
 
 npm install
 npm run dev
