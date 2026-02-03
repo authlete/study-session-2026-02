@@ -32,7 +32,7 @@ After installation, clone this repository and start the mock servers.
 
 ```sh
 git clone https://github.com/authlete/study-session-2026-02.git
-cd authlete-study-sessoin-2026-02
+cd study-sessoin-2026-02
 
 npm install
 npm run dev
