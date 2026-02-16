@@ -55,7 +55,7 @@ In [Endpoints] > [Authorization] > [General] > [PKCE], enable `Require PKCE` and
 2. Set the scope name to `mcp.echo` and the description to `Call the echo MCP server`, then click `Add`.
 3. Click Save Changes.
 
-![add scope for mcp server](../img/01-setup-authlete/scope-setting.png)
+![add scope for mcp server](../img/01-setup-authlete/scope-setting-en.png)
 
 > Note: The scope configured here corresponds to `MCP_SCOPES` in `.env`. The sample MCP server uses this value for the `scope` in the `WWW-Authenticate` header returned with a 401 response and for `supported_scopes` in Protected Resource Metadata.
 
@@ -73,11 +73,11 @@ Set the JWK (JSON Web Key) for signing access tokens and ID tokens. First, visit
 
 Copy the Public and Private Keypair Set from the middle of the page and paste it into the Authlete service settings at [Key Management] > [JWK Set] > [Authorization Server] > [JWK Set Content]. Set the ID token signing key ID to `rsa1`.
 
-![set up jwk set content in console](../img/01-setup-authlete/jwk-set.png)
+![set up jwk set content in console](../img/01-setup-authlete/jwk-set-en.png)
 
 Likewise, in [Token & Claims] > [Access Token] > [General], set `Select Signing Algorithm` to `RS256` and `Signing Key ID` to `rsa1`, then click Save Changes.
 
-![configure the access token signing key](../img/01-setup-authlete/access-token-signing-key.png)
+![configure the access token signing key](../img/01-setup-authlete/access-token-signing-key-en.png)
 
 ### Enable CIMD (Client ID Metadata Document)
 
@@ -97,11 +97,11 @@ Register a sample client for verifying the authorization server behavior.
   4. Client type: Public
   5. Application type: Web
 
-![create new client](../img/01-setup-authlete/create-new-client.png)
+![create new client](../img/01-setup-authlete/create-new-client-en.png)
 
 3. In the client settings under [Endpoints] > [Basic Settings] > [Redirect URIs], add `http://localhost:9000/sample-client`.
 
-![add redirect uri](../img/01-setup-authlete/redirect-uri.png)
+![add redirect uri](../img/01-setup-authlete/redirect-uri-en.png)
 
 4. In the client settings under [Token & Claims] > [ID Token] > [ID Token Signing Algorithm], set `RS256` and click Save Changes.
 
