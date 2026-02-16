@@ -23,8 +23,16 @@ const demoUser: User = {
 
 export const authorizeHandler = async (c: Context) => {
     const { authlete, serviceId } = c.var;
-    const { search } = new URL(c.req.url);
-    const parameters = search.startsWith('?') ? search.slice(1) : '';
+    const parameters = await extractAuthorizationParameters(c);
+    if (parameters === null) {
+        return c.json(
+            {
+                error: 'invalid_request',
+                error_description: 'Content-Type must be application/x-www-form-urlencoded'
+            },
+            400,
+        );
+    }
     const authorizationRequest: AuthorizationRequest = {
         parameters
     };
@@ -36,6 +44,19 @@ export const authorizeHandler = async (c: Context) => {
 
     return handleAuthorizeAction(c, response);
 };
+
+async function extractAuthorizationParameters(c: Context): Promise<string | null> {
+    if (c.req.method === 'POST') {
+        const contentType = c.req.header('content-type') ?? '';
+        if (!contentType.toLowerCase().startsWith('application/x-www-form-urlencoded')) {
+            return null;
+        }
+        return await c.req.text();
+    }
+
+    const { search } = new URL(c.req.url);
+    return search.startsWith('?') ? search.slice(1) : '';
+}
 
 export const consentHandler = async (c: Context) => {
     const { authlete, serviceId } = c.var;
