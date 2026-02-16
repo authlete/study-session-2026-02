@@ -136,6 +136,7 @@ import {
 } from './samples/handlers';
 
 app.get('/authorize', authorizeHandler);
+app.post('/authorize', authorizeHandler);
 app.post('/consent', consentHandler);
 app.post('/token', tokenHandler);
 app.get('/jwks', jwksHandler);
