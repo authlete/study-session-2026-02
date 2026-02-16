@@ -65,7 +65,7 @@ Set the JWK (JSON Web Key) for signing access tokens and ID tokens. First, visit
 
 - Key Size: 2048
 - Key Use: Signature
-- Algorithm: PS256
+- Algorithm: RS256
 - Key ID: Specify
     - Key ID value: rsa1
 
@@ -75,7 +75,7 @@ Copy the Public and Private Keypair Set from the middle of the page and paste it
 
 ![set up jwk set content in console](../img/01-setup-authlete/jwk-set.png)
 
-Likewise, in [Token & Claims] > [Access Token] > [General], set `Select Signing Algorithm` to `PS256` and `Signing Key ID` to `rsa1`, then click Save Changes.
+Likewise, in [Token & Claims] > [Access Token] > [General], set `Select Signing Algorithm` to `RS256` and `Signing Key ID` to `rsa1`, then click Save Changes.
 
 ![configure the access token signing key](../img/01-setup-authlete/access-token-signing-key.png)
 
@@ -103,7 +103,7 @@ Register a sample client for verifying the authorization server behavior.
 
 ![add redirect uri](../img/01-setup-authlete/redirect-uri.png)
 
-4. In the client settings under [Token & Claims] > [ID Token] > [ID Token Signing Algorithm], set `PS256` and click Save Changes.
+4. In the client settings under [Token & Claims] > [ID Token] > [ID Token Signing Algorithm], set `RS256` and click Save Changes.
 
 Client setup is complete.
 

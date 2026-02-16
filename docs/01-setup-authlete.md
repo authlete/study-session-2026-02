@@ -64,7 +64,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=CCVfO91zGcjgUkatssaNwSsGG-NYTbFlbO8ORSEkFLQ # Repla
 
 - Key Size: 2048
 - Key Use: Signature
-- Algorithm: PS256
+- Algorithm: RS256
 - Key ID: Specify 
     - Key ID の値: rsa1
 
@@ -74,7 +74,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=CCVfO91zGcjgUkatssaNwSsGG-NYTbFlbO8ORSEkFLQ # Repla
 
 ![set up jwk set content in console](../img/01-setup-authlete/jwk-set.png)
 
-同様に [トークン&クレーム] > [アクセストークン] > [一般] の `署名アルゴリズムを選択` を `PS256` に、`署名キーIDを入力` に `rsa1` を設定し、変更を保存をクリックします。 
+同様に [トークン&クレーム] > [アクセストークン] > [一般] の `署名アルゴリズムを選択` を `RS256` に、`署名キーIDを入力` に `rsa1` を設定し、変更を保存をクリックします。 
 
 ![configure the access token signing key](../img/01-setup-authlete/access-token-signing-key.png)
 
@@ -102,7 +102,7 @@ Authlete のサービス設定はこれで完了です。
 
 ![add redirect uri](../img/01-setup-authlete/redirect-uri.png)
 
-4. クライアント設定の [トークンとクレーム] > [IDトークン] > [IDトークン署名アルゴリズム] を `PS256` に設定し、変更を保存をクリックします。 
+4. クライアント設定の [トークンとクレーム] > [IDトークン] > [IDトークン署名アルゴリズム] を `RS256` に設定し、変更を保存をクリックします。 
 
 クライアントの設定は以上です。
 
