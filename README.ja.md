@@ -28,7 +28,7 @@ winget install "Node.js LTS"
 
 ```sh
 git clone https://github.com/authlete/study-session-2026-02.git
-cd study-sessoin-2026-02
+cd study-session-2026-02
 
 npm install
 npm run dev

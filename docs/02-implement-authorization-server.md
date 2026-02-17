@@ -23,7 +23,7 @@ async function run() {
 }
 ```
 
-このサンプルにはすでに Authlte SDK が組み込まれており、[.env.example](/.env.example) で示した以下の環境変数から、必要なデータを読みとりインスタンスを生成します。
+このサンプルにはすでに Authlete SDK が組み込まれており、[.env.example](/.env.example) で示した以下の環境変数から、必要なデータを読みとりインスタンスを生成します。
 
 ```conf
 # Authlete Settings
@@ -289,7 +289,7 @@ const demoUser: User = {
     claims: {
         family_name: 'Demo',
         given_name: 'Authlete',
-        preffered_username: "Authlete Demo User"
+        preferred_username: "Authlete Demo User"
     },
     consentedScopes: [],
 };
@@ -325,7 +325,7 @@ app.get('/.well-known/openid-configuration', openIdConfigHandler);
 実装が完了したら http://localhost:9000/sample-client にアクセスを行い、認可リクエストを送信してみましょう。
 `Start authorization` ボタンをクリックすると、認可リクエストが送信されます。認可エンドポイントから正しく認可コード応答が返り、`Exchange code` ボタンでトークンの交換ができれば完了です。
 
-https://jwt.io などでトークンをでコードし、ペイロードを確認してみましょう。認可リクエストで指定したパラメーターや、認可サーバーで埋め込んだユーザークレームが含まれていることを確認してください。
+https://jwt.io などでトークンをデコードし、ペイロードを確認してみましょう。認可リクエストで指定したパラメーターや、認可サーバーで埋め込んだユーザークレームが含まれていることを確認してください。
 
 ## HTTPS での公開
 

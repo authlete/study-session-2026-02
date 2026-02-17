@@ -272,7 +272,7 @@ const demoUser: User = {
     claims: {
         family_name: 'Demo',
         given_name: 'Authlete',
-        preffered_username: "Authlete Demo User"
+        preferred_username: "Authlete Demo User"
     },
     consentedScopes: [],
 };
