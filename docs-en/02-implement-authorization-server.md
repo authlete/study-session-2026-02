@@ -236,7 +236,7 @@ In general, generate responses according to the `action` value returned by Authl
 [Basic concepts for handling responses from Authlete APIs - Authlete](https://www.authlete.com/ja/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
 
 In this workshop, user authentication itself is not implemented, so we assume the following demo user is already authenticated.
-Also, claims shown below are added to the ID token because specific claims are required by MCP server tools used later.
+Also, claims shown below are added to the access token because specific claims are required by MCP server tools used later.
 
 ```ts
 const demoUser: User = {

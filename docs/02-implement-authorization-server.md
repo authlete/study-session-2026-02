@@ -253,7 +253,7 @@ Authlete API の応答をどのように解析する必要があるかについ�
 [Authlete API からのレスポンスの処理に関する基本的な考えかた - Authlete](https://www.authlete.com/ja/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
 
 今回の実装ではユーザー認証は実装しないため、以下のデモユーザーで認証済みである前提で進めます。
-また、ID トークンのクレームには claims で示したクレームを追加します。これは後ほど連携する MCP サーバーの Tool で特定のクレームが必要となるためです。
+また、アクセストークンのクレームには claims で示したクレームを追加します。これは後ほど連携する MCP サーバーの Tool で特定のクレームが必要となるためです。
 
 ```ts
 const demoUser: User = {
