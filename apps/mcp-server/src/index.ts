@@ -1,7 +1,7 @@
 import 'dotenv/config';
 
 import { serve } from '@hono/node-server';
-import { StreamableHTTPTransport, simpleMcpAuthRouter } from '@hono/mcp';
+import { StreamableHTTPTransport } from '@hono/mcp';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Hono } from 'hono';
 
@@ -24,14 +24,13 @@ const bearerGuard = createMcpGuard(config);
 
 app.use('/mcp', bearerGuard);
 
-app.route(
-  '/',
-  simpleMcpAuthRouter({
-    issuer: config.issuer,
-    resourceServerUrl: new URL('/mcp', ensureTrailingSlash(config.baseMcpUrl)),
-    serviceDocumentationUrl: config.documentationUrl ? new URL(config.documentationUrl) : undefined,
-    scopesSupported: config.scopes,
-    resourceName: config.resourceName,
+app.get('/.well-known/oauth-protected-resource/mcp', (c) =>
+  c.json({
+    resource: new URL('/mcp', ensureTrailingSlash(config.baseMcpUrl)).toString(),
+    authorization_servers: [config.issuer],
+    scopes_supported: config.scopes,
+    resource_name: config.resourceName,
+    resource_documentation: config.documentationUrl,
   }),
 );
 
