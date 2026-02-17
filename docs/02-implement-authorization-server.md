@@ -79,6 +79,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=your_authlete_service_accesstoken_here # Replace wi
 sequenceDiagram
     participant U as User
     participant C as MCP Client
+    participant UA as User Agent<br/>(Browser)
     participant AS as Authorization Server<br/>(https://example.ngrok-free.app)
     participant AL as Authlete
     participant MS as MCP Server<br/>(http://localhost:9001)
@@ -110,20 +111,25 @@ sequenceDiagram
     rect rgb(250, 247, 255)
         Note over U,AL: OAuth 2.1 Authorization Code + PKCE (CIMD)
         U->>C: Start sign-in / connect MCP
+        C->>UA: Open authorization URL
         rect rgb(226, 205, 245)
-            Note over C,AS: [2] 🛠️【実装対象】
-            C->>AS: GET /authorize?<br/>client_id=https://client.example/metadata.json&...
+            Note over UA,AS: [2] 🛠️【実装対象】
+            UA->>AS: GET /authorize?<br/>client_id=https://client.example/metadata.json&...
             AS->>AL: POST /auth/authorization {parameters}<br/>(authlete.authorization.processRequest)
             Note over AL: Detect URL client_id<br/>Fetch CIMD metadata<br/>Validate & persist client
             AL-->>AS: 200 {action:"INTERACTION", ticket}
-            AS-->>C: 200 HTML (Login + Consent UI)
+            Note right of AS: Save ticket to session
+            AS-->>UA: 200 HTML (Login + Consent UI)
         end
         rect rgb(217, 191, 242)
-            Note over U,AS: [3] 🛠️【実装対象】
-            U-->>AS: POST /consent
+            Note over UA,AS: [3] 🛠️【実装対象】
+            U->>UA: Approve consent
+            UA-->>AS: POST /consent
+            Note right of AS: Load ticket from session
             AS->>AL: POST /auth/authorization/issue {ticket, subject}<br/>(authlete.authorization.issue)
             AL-->>AS: 200 {action:"LOCATION", responseContent}
-            AS-->>C: 302 redirect_uri?code=AUTH_CODE
+            AS-->>UA: 302 redirect_uri?code=AUTH_CODE&state=...
+            UA-->>C: Deliver authorization response (code, state)
         end
     end
 

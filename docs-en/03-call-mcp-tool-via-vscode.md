@@ -1,72 +1,95 @@
 # Integration with Visual Studio Code
 
-Visual Studio Code (VS Code) is an AI agent that has supported CIMD early on.
-In this final chapter, you will connect to an MCP server protected by your own authorization server from VS Code and confirm that the agent can call tools.
-If you have implemented everything up to this point, client registration via CIMD, token acquisition, and MCP server connection should all work.
+Visual Studio Code (VS Code) is an AI agent that adopted CIMD early.
+In this final chapter, you will connect from VS Code to an MCP server protected by your own authorization server and verify that the agent can call tools.
+If everything up to this point is implemented, CIMD client registration, token acquisition, and MCP server connection should all work.
 
 ## MCP Server Implementation
 
-The MCP server is implemented using `@hono/mcp` in [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts). Since `@hono/mcp` only generates Protected Resource Metadata, you must implement token verification and 401 Unauthorized responses yourself. That is done in [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts).
+The MCP server is implemented in [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts) using `@hono/mcp`.
+Because `@hono/mcp` only generates resources such as Protected Resource Metadata, you need to implement token validation and 401 Unauthorized handling yourself. This part is implemented in [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts).
 
-## Connecting to the MCP Server
+## Connect to the MCP Server
 
-There are several ways to connect to the MCP server, but here we use workspace settings ([/.vscode/mcp.json](/.vscode/mcp.json)).
-It is already included in the sample repository, so open this repository in VS Code and open [/.vscode/mcp.json](/.vscode/mcp.json).
+There are multiple ways to connect to an MCP server, but this workshop uses workspace settings ([/.vscode/mcp.json](/.vscode/mcp.json)).
+It is already included in this sample repository, so open this repository in VS Code and open [/.vscode/mcp.json](/.vscode/mcp.json).
 
-You should see a Start button above demo-mcp-server.
+When opened, a Start button appears above `demo-mcp-server`.
 
 ![start mcp server](../img/03-call-mcp-tool-via-vscode/start-mcp.png)
 
-Click Start and a dialog will appear. Click Allow.
+Click Start. A dialog like below appears, then click Allow.
 
 ![start authorization](../img/03-call-mcp-tool-via-vscode/start-authorization.png)
 
-From the 401 Unauthorized response from the MCP server (WWW-Authenticate header) and the Protected Resource Metadata, VS Code will access the authorization server metadata. If your authorization server is implemented correctly, VS Code will attempt an authorization request using CIMD.
+From the MCP server's 401 Unauthorized response (`WWW-Authenticate`) and Protected Resource Metadata, VS Code accesses authorization server metadata. If your authorization server is correctly implemented, VS Code attempts a CIMD authorization request.
 
 ![authorization request](../img/03-call-mcp-tool-via-vscode/authorization-request.png)
 
-> Note: Confirm that client_id starts with https%3A%2F%2Fvscode...
+> Note: Confirm that `client_id` starts with `https%3A%2F%2Fvscode...`.
 
-Click Open in the dialog to have the browser send an authorization request to the authorization server. If your implementation is correct, some consent screen should appear.
+Click Open in the dialog to have the browser send the authorization request to your authorization server. If implemented correctly, a consent screen should appear.
 
 In the sample implementation, the following screen is shown.
 
 ![consent screen](../img/03-call-mcp-tool-via-vscode/consent-screen.png)
 
-After you complete consent and return to VS Code, the UI changes to show the MCP server is running and that two tools are available.
+After completing consent and returning to VS Code, the UI changes to indicate that the MCP server is running and that two tools are available.
 
 ![connected mcp server](../img/03-call-mcp-tool-via-vscode/connected-mcp.png)
 
 ## Calling from GitHub Copilot
 
-From the VS Code command palette, run the `Chat: Open Chat` command.
-In Chat, issue an instruction like the following specifying the MCP server to confirm it works.
+Run `Chat: Open Chat` from the VS Code command palette.
+In chat, issue an instruction that explicitly uses the MCP server and verify the server works.
 
 > Call the #echo tool with the message "Hello world".
 
-If it works, you should see output similar to the following.
+If it works correctly, output similar to the following is expected.
 
 ![chat result](../img/03-call-mcp-tool-via-vscode/chat-result.png)
 
+You can also try the Greet tool in the same way.
+
+> Call the #greet tool.
+
+If you receive a response based on claims embedded in the access token, it is successful.
+
 ## If You Cannot Connect
 
-Here are common failure examples when the MCP server does not connect.
+Below are common failure patterns when MCP server connection does not work.
 
-### Metadata is invalid
+### Metadata Issues
 
-If the authorization server is not implemented correctly, you may see an error or a dialog asking for a client ID.
+If the authorization server is not correctly implemented, you may see an error or a dialog asking for a client ID.
 
 ![error dialog as does not support CIMD](../img/03-call-mcp-tool-via-vscode/error-dialog.png)
 
-Connection logs for the MCP server are shown in the OUTPUT panel, so check there if you hit an error.
+Connection logs for MCP server startup are shown in the OUTPUT panel. Check them when errors occur.
 
 ![OUTPUT panel error example (metadata not found)](../img/03-call-mcp-tool-via-vscode/output-panel-error-example.png)
 
-### Authorization flow started but did not finish
+A warning such as `[warning] Error fetching authorization server metadata: Error: Failed to fetch authorization server metadata from https://<ngrok-domain>/.well-known/oauth-authorization-server: 404 404 Not Found` is not a problem in this workshop because that endpoint is intentionally not implemented. VS Code falls back to `/.well-known/openid-configuration`.
 
-After repeated debugging, the authorization flow can get stuck in an incomplete state.
-Click the alarm icon at the bottom-right of VS Code to cancel the ongoing authorization flow.
+### Authorization Flow Started but Not Completed
+
+During repeated debugging, the authorization flow can remain stuck in an unfinished state.
+Clicking the alarm icon at the bottom-right of VS Code may allow cancellation of the in-progress authorization flow.
 
 ![check notification](../img/03-call-mcp-tool-via-vscode/check-notification.png)
 
-To delete caches such as client IDs, use the `removeDynamicAuthenticationProviders` command.
+To clear caches such as cached client IDs, use the `removeDynamicAuthenticationProviders` command.
+
+### VS Code State Looks Broken
+
+Depending on the environment, VS Code may keep invalid cache and fail to refresh correctly.
+In that case, try clearing cache with the following steps.
+
+1. Open Command Palette (`F1` or `Command` + `Shift` + `P`)
+2. Enter `removeDynamicAuthenticationProviders` and select `Authentication: Remove Dynamic Authentication Provider`
+3. Check `http://localhost:9001` and click OK to clear token cache
+
+If MCP server connection still fails, reloading the VS Code window can help.
+
+1. Open Command Palette (`F1` or `Command` + `Shift` + `P`)
+2. Enter `Reload Window` and select `Developer: Reload Window`
