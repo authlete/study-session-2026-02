@@ -6,7 +6,7 @@ Visual Studio Code (VS Code) は CIMD に早くから対応している AI Agent
 
 ## MCP サーバーの実装
 
-MCP サーバーは `@hono/mcp` を利用し [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts) で実装されています。`@hono/mcp` は Protected Resource Metadata などしか生成しないので、トークンの検証コードや 401 Unauhtorized を返却するコードは自分で書く必要があります。そのため [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts) で実装しています。
+MCP サーバーは `@hono/mcp` を利用し [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts) で実装されています。`@hono/mcp` は Protected Resource Metadata などしか生成しないので、トークンの検証コードや 401 Unauthorized を返却するコードは自分で書く必要があります。そのため [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts) で実装しています。
 
 ## MCP サーバーとの接続
 
@@ -42,7 +42,7 @@ MCP サーバーの応答する 401 Unauthorized レスポンスの WWW-Authenti
 VS Code のコマンドパレットから `Chat: Open Chat` コマンドを実行します。
 Chat で以下のように MCP サーバーを指定した指示を出し、MCP サーバーが動作することを確認します。
 
-> #echo ツールを  "Hello world" のメッセージでよびだして
+> #echo ツールを  "Hello world" のメッセージで呼び出して
 
 正常動作した場合、以下のような出力が期待されます。
 
@@ -50,7 +50,7 @@ Chat で以下のように MCP サーバーを指定した指示を出し、MCP 
 
 同様に Greet ツールの呼び出しも試してみましょう
 
-> #greet ツールをよびだして
+> #greet ツールを呼び出して
 
 アクセストークンに埋め込んだクレームをもとに応答が返ってくれば成功です。
 
@@ -72,7 +72,7 @@ MCP サーバーとの接続時のログは OUTPUT Panel に表示されるの�
 
 ### 認可フローが開始したものの終了していない
 
-なんどもデバッグを繰り返すうちに、認可フローが終わっていな状態で止まってしまうことがあります。
+なんどもデバッグを繰り返すうちに、認可フローが終わっていない状態で止まってしまうことがあります。
 VS Code の右下のアラームアイコンをクリックすることで、継続中の認可フローをキャンセルできることがあるので困った場合には確認してください。
 
 ![check notification](../img/03-call-mcp-tool-via-vscode/check-notification.png)
@@ -92,4 +92,3 @@ VS Code の右下のアラームアイコンをクリックすることで、継
 
 1. コマンドパレットを起動 (`F1` or `Command` + `Shift` + `P`)
 2. `Reload Window` と入力し、Developer: Reload Window を選択
-
