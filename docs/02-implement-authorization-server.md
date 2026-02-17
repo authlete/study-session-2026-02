@@ -177,6 +177,37 @@ sequenceDiagram
 1. 上記情報をもとに、Authlete SDK を利用し Authlete API を呼び出します
 1. Authlete API の応答を解析し、クライアントにレスポンスを応答します
 
+### OpenID Discovery エンドポイント
+
+最もシンプルな Authlete サーバーの呼び出し例は OpenID Discovery エンドポイントの呼び出しです。
+`/.well-known/openid-configuration` を呼び出された認可サーバーは、Authlete の service/configuration API を呼び出し、Authlete のレスポンスをそのまま応答します。
+
+```ts
+app.get('/.well-known/openid-configuration', async (c: Context) => {
+    //コンテキストから authlete インスタンスと serviceId を取り出し
+    const { authlete, serviceId } = c.var;
+    //Authlete API の呼び出し
+    const config = await authlete.service.getConfiguration({
+        serviceId
+    })
+    //レスポンスをそのまま応答
+    return c.json(config)
+});
+```
+
+jwks エンドポイントについても同様です。
+
+### その他のエンドポイント
+
+認可エンドポイントやトークンエンドポイントは OpenID Discovery に比べると少し複雑です。
+Authlete はリクエストの解析結果を認可サーバーに応答しますが、その中に認可サーバーが次に何をすべきかを示す `action` 応答が含まれています。`action` 応答に応じて適切なハンドリングを実装します。
+
+[Authlete API からのレスポンスの処理に関する基本的な考えかた - Authlete](https://www.authlete.com/ja/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
+
+Authlete API の応答をどのように解析する必要があるかについては各 API ドキュメントを参照してください。
+
+例えば認可エンドポイントでは `action: INTERACTION` が応答される場合があります。これはユーザーが未同意であればインタラクティブな同意画面を表示せよという指示なので、認可画面をレンダリングして応答します。
+
 ```ts
 app.get('/authorize', async (c: Context) => {
   console.log('GET /authorize called');
@@ -247,10 +278,7 @@ app.get('/authorize', async (c: Context) => {
 });
 ```
 
-Authlete API の応答をどのように解析する必要があるかについては各 API ドキュメントを参照します。
-基本的には Authlete API のレスポンスに含まれる action パラメーターの値に従い、応答を生成します。
-
-[Authlete API からのレスポンスの処理に関する基本的な考えかた - Authlete](https://www.authlete.com/ja/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
+> Note: クライアント ID の表示ロジックは CIMD ドキュメントの [クライアントプロパティ](https://www.authlete.com/ja/developers/cimd/#client_properties) を参照ください。[samples/handlers](/apps/oauth-server/src/samples/handlers.ts) に含まれる resolveClientId 関数が実装例ですので、基本的にはこちらのメソッドを利用いただいて構いません。
 
 今回の実装ではユーザー認証は実装しないため、以下のデモユーザーで認証済みである前提で進めます。
 また、アクセストークンのクレームには claims で示したクレームを追加します。これは後ほど連携する MCP サーバーの Tool で特定のクレームが必要となるためです。

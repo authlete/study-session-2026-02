@@ -160,6 +160,37 @@ The implementation flow is:
 3. Call the Authlete API through the Authlete SDK using the extracted information.
 4. Parse the Authlete API response and return a response to the client.
 
+### OpenID Discovery Endpoint
+
+The simplest Authlete server call in this workshop is the OpenID Discovery endpoint.
+When `/.well-known/openid-configuration` is called, the authorization server calls Authlete's `service/configuration` API and returns the response as-is.
+
+```ts
+app.get('/.well-known/openid-configuration', async (c: Context) => {
+    // Get authlete instance and serviceId from context
+    const { authlete, serviceId } = c.var;
+    // Call Authlete API
+    const config = await authlete.service.getConfiguration({
+        serviceId
+    })
+    // Return the response as-is
+    return c.json(config)
+});
+```
+
+The same applies to the `jwks` endpoint.
+
+### Other Endpoints
+
+Authorization and token endpoints are slightly more complex than OpenID Discovery.
+Authlete returns the request analysis result to the authorization server, including an `action` value that indicates what the authorization server should do next. Implement handling based on each returned `action`.
+
+[Basic concepts for handling responses from Authlete APIs - Authlete](https://www.authlete.com/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
+
+Refer to each API document for details on parsing Authlete API responses.
+
+For example, the authorization endpoint may return `action: INTERACTION`. This means you should show an interactive consent screen (if the user has not yet consented), so render and return the consent UI.
+
 ```ts
 app.get('/authorize', async (c: Context) => {
   console.log('GET /authorize called');
@@ -230,10 +261,7 @@ app.get('/authorize', async (c: Context) => {
 });
 ```
 
-Refer to each API document for details on parsing Authlete API responses.
-In general, generate responses according to the `action` value returned by Authlete APIs.
-
-[Basic concepts for handling responses from Authlete APIs - Authlete](https://www.authlete.com/ja/kb/getting-started/implementing-an-authorization-server/handling-responses-from-authlete-apis/)
+> Note: For client ID display logic, refer to CIMD documentation: [Client Properties](https://www.authlete.com/developers/cimd/#client_properties). You can generally use the `resolveClientId` function in [/apps/oauth-server/src/samples/handlers.ts](/apps/oauth-server/src/samples/handlers.ts) as-is.
 
 In this workshop, user authentication itself is not implemented, so we assume the following demo user is already authenticated.
 Also, claims shown below are added to the access token because specific claims are required by MCP server tools used later.
