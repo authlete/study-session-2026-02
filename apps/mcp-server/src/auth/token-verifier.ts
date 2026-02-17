@@ -54,14 +54,23 @@ async function resolveJwks(issuer: string, getCachedUri: () => Promise<string | 
   if (!cachedUri) {
     return null;
   }
-  return createRemoteJWKSet(new URL(cachedUri));
+  return createRemoteJWKSet(new URL(cachedUri), {
+    headers: {
+      'ngrok-skip-browser-warning': 'true',
+    },
+  });
 }
 
 async function resolveJwksUri(issuer: string) {
   for (const path of WELL_KNOWN_PATHS) {
     const metadataUrl = new URL(path, ensureTrailingSlash(issuer));
     try {
-      const response = await fetch(metadataUrl, { headers: { accept: 'application/json' } });
+      const response = await fetch(metadataUrl, {
+        headers: {
+          accept: 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+        },
+      });
       if (!response.ok) {
         continue;
       }
