@@ -17,7 +17,7 @@ MCP サーバーとの接続方法は幾つかありますが、今回はワー�
 
 ![start mcp server](../img/03-call-mcp-tool-via-vscode/start-mcp.png)
 
-Start ボタンをクリックすると、以下のようなダイアルボックスが表示されるので Allow をクリックします。
+Start ボタンをクリックすると、以下のようなダイアログボックスが表示されるので Allow をクリックします。
 
 ![start authorization](../img/03-call-mcp-tool-via-vscode/start-authorization.png)
 
@@ -48,6 +48,12 @@ Chat で以下のように MCP サーバーを指定した指示を出し、MCP 
 
 ![chat result](../img/03-call-mcp-tool-via-vscode/chat-result.png)
 
+同様に Greet ツールの呼び出しも試してみましょう
+
+> #greet ツールをよびだして
+
+アクセストークンに埋め込んだクレームをもとに応答が返ってくれば成功です。
+
 ## うまく接続できない場合
 
 MCP サーバーに接続がうまくいかない場合の失敗例を挙げますので参考にしてください。
@@ -62,6 +68,8 @@ MCP サーバーとの接続時のログは OUTPUT Panel に表示されるの�
 
 ![OUTPUT panel error example (metadata not found)](../img/03-call-mcp-tool-via-vscode/output-panel-error-example.png)
 
+なお、`[warning] Error fetching authorization server metadata: Error: Failed to fetch authorization server metadata from https://<ngrok-domain>/.well-known/oauth-authorization-server: 404 404 Not Found` のように `oauth-authorization-server` へのリクエストが 404 となるのは、今回は実装していないので問題ありません。`/.well-known/openid-configuration` にフォールバックされます。
+
 ### 認可フローが開始したものの終了していない
 
 なんどもデバッグを繰り返すうちに、認可フローが終わっていな状態で止まってしまうことがあります。
@@ -70,3 +78,18 @@ VS Code の右下のアラームアイコンをクリックすることで、継
 ![check notification](../img/03-call-mcp-tool-via-vscode/check-notification.png)
 
 またクライアント ID などのキャッシュを削除するには `removeDynamicAuthenticationProviders` コマンドを利用してください。
+
+### VS Code の状態がおかしい
+
+環境によっては VS Code が不正なキャッシュを保持したまま更新してくれない場合があります。
+その場合以下の手順でキャッシュのクリアを試してください。
+
+1. コマンドパレットを起動 (`F1` or `Command` + `Shift` + `P`)
+2. `removeDynamicAuthenticationProviders` と入力し、Authentication: Remove Dynamic Authentication Provider コマンドを選択
+3. http://localhost:9001 にチェックを入れて OK でトークンキャッシュをクリア
+
+また MCP サーバーとの接続がうまくいかない場合、VS Code の Window をリロードすることで改善する場合があります。
+
+1. コマンドパレットを起動 (`F1` or `Command` + `Shift` + `P`)
+2. `Reload Window` と入力し、Developer: Reload Window を選択
+
