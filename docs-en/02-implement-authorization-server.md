@@ -151,7 +151,7 @@ sequenceDiagram
 
 ## Implementation Approach
 
-The file [index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint. The `/authorize` endpoint includes a sample SDK call as a starting point.
+The file [index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint.
 
 The implementation flow is:
 
@@ -159,6 +159,8 @@ The implementation flow is:
 2. Parse the client request and extract required information such as headers, query parameters, and body.
 3. Call the Authlete API through the Authlete SDK using the extracted information.
 4. Parse the Authlete API response and return a response to the client.
+
+The following sections include implementation examples to help you get started.
 
 ### OpenID Discovery Endpoint
 

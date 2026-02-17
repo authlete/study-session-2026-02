@@ -168,7 +168,7 @@ sequenceDiagram
 
 ## 具体的な実装方針
 
-[index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。`/authorize` エンドポイントに実装のための足掛かりとして、SDK の呼び出し例を記載しています。
+[index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。
 
 実装方針としては以下の通りです。
 
@@ -176,6 +176,8 @@ sequenceDiagram
 1. クライアントからのリクエストを解析し、ヘッダー、クエリパラメータ、Body など必要な情報を取得します
 1. 上記情報をもとに、Authlete SDK を利用し Authlete API を呼び出します
 1. Authlete API の応答を解析し、クライアントにレスポンスを応答します
+
+以下に実装の足掛かりとなる例を示します。
 
 ### OpenID Discovery エンドポイント
 
