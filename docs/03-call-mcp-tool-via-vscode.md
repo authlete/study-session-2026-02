@@ -6,7 +6,9 @@ Visual Studio Code (VS Code) は CIMD に早くから対応している AI Agent
 
 ## MCP サーバーの実装
 
-MCP サーバーは `@hono/mcp` を利用し [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts) で実装されています。`@hono/mcp` は Protected Resource Metadata などしか生成しないので、トークンの検証コードや 401 Unauthorized を返却するコードは自分で書く必要があります。そのため [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts) で実装しています。
+MCP サーバーは `@hono/mcp` を利用し [/apps/mcp-server/src/index.ts](/apps/mcp-server/src/index.ts) で実装されています。
+`@hono/mcp` が生成する Protected Resource Metadata は `@modelcontextprotocol/sdk` の[バグ](https://github.com/honojs/middleware/issues/1753)により正しいメタデータを生成しないので、メタデータの生成は独自に実装しています。
+またトークンの検証コードや 401 Unauthorized を返却するコードは自分で書く必要があります。そのため [bearer-guard.ts](/apps/mcp-server/src/auth/bearer-guard.ts) で実装しています。
 
 ## MCP サーバーとの接続
 
