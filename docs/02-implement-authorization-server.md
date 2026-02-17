@@ -39,16 +39,126 @@ AUTHLETE_SERVICE_ACCESSTOKEN=your_authlete_service_accesstoken_here # Replace wi
 
 実装する OAuth/OIDC のエンドポイントは以下の通りです。
 
-|Method| Path | Name | Description | Authlete API |
-| ---- | ---- | ---- | ----------- | ------------ |
-|GET|/authorize|認可エンドポイント|クライアントアプリケーションの認可リクエストを処理するエンドポイント|[/api/{serviceId}/auth/authorization](https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/authorization) |
-|GET|/consent| ユーザー同意結果取得エンドポイント| ユーザーの同意結果を取得し、認可コードを発行するエンドポイント| [/api/{serviceId}/auth/authorization/issue](https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/authorization/issue) |
-|POST|/token | トークンエンドポイント|クライアントアプリケーションのトークンリクエストを処理るエンドポイント| [/api/{serviceId}/auth/token](https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/token) |
-|TET|/.well-known/openid-configuration|OpenID Discovery エンドポイント|サーバーメタデータを公開るエンドポイント|[/api/{serviceId}/service/configuration](https://docs.authlete.com/en/shared/latest#get-/api/-serviceId-/service/configuration) |
-|GET|/jwks | JWK セットエンドポイント | トークン署名検証用の公開鍵を JWKS 形式で公開るエンドポイント|[/api/{serviceId}/service/jwks/get](https://docs.authlete.com/en/shared/latest#get-/api/-serviceId-/service/jwks/get) |
+| No. | Method | Path | Name | Description | Authlete API path | Authlete Typescript SDK メソッド | ドキュメント |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| [1] | GET | `/.well-known/openid-configuration` | OpenID Discovery エンドポイント | サーバーメタデータを公開するエンドポイント | `GET /api/{serviceId}/service/configuration` | `authlete.service.getConfiguration({ serviceId })` | https://docs.authlete.com/en/shared/latest#get-/api/-serviceId-/service/configuration |
+| [2] | GET/POST | `/authorize` | 認可エンドポイント | クライアントアプリケーションの認可リクエストを処理するエンドポイント | `POST /api/{serviceId}/auth/authorization` | `authlete.authorization.processRequest({ serviceId, authorizationRequest })` | https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/authorization |
+| [3] | POST | `/consent` | ユーザー同意結果取得エンドポイント | ユーザーの同意結果を取得し、認可コードを発行するエンドポイント | `POST /api/{serviceId}/auth/authorization/issue` | `authlete.authorization.issue({ serviceId, authorizationIssueRequest })` | https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/authorization/issue |
+| [4] | POST | `/token` | トークンエンドポイント | クライアントアプリケーションのトークンリクエストを処理するエンドポイント | `POST /api/{serviceId}/auth/token` | `authlete.token.process({ serviceId, tokenRequest })` | https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/token |
+| [5] | GET | `/jwks` | JWK セットエンドポイント | トークン署名検証用の公開鍵を JWKS 形式で公開するエンドポイント | `GET /api/{serviceId}/service/jwks/get` | `authlete.jwkSetEndpoint.serviceJwksGetApi({ serviceId })` | https://docs.authlete.com/en/shared/latest#get-/api/-serviceId-/service/jwks/get |
 
 各エンドポイントとでは、内部的に Authlete API の列に示した API を呼び出し、認可処理を実装します。認可サーバーは Authlete からの応答を解析し、認可サーバー独自のカスタマイズを実施したうえで、クライアントに結果を返却します。
 
+ユーザーが同意をキャンセルした場合など、エラー応答を返却したい場合、採番対象外として以下の API を利用します。
+
+| Authlete API path | 概要 | Authlete Typescript SDK メソッド | ドキュメント |
+| --- | --- | --- | --- |
+| `POST /api/{serviceId}/auth/authorization/fail` | 認可失敗（ユーザー拒否、`prompt=none` 非対応など）時に、OAuth/OIDC エラー応答を生成する | `authlete.authorization.fail({ serviceId, authorizationFailRequest })` | https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/authorization/fail |
+
+
+## フロー図
+
+今回実装する全体のフローを記載します。🛠️【実装対象】と記載がある部分が今回のワークショップで実装する箇所です。
+上述の実装するエンドポイントの採番に対応していますので、対応するメソッドとドキュメントの確認に利用してください。
+
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'primaryTextColor': '#000000',
+    'secondaryTextColor': '#000000',
+    'tertiaryTextColor': '#000000',
+    'lineColor': '#000000',
+    'actorTextColor': '#000000',
+    'noteTextColor': '#000000',
+    'signalTextColor': '#000000',
+    'sequenceNumberColor': '#000000'
+  },
+  'themeCSS': '.messageText, .labelText, .loopText, .noteText, .actor, .actor > tspan, .sequenceNumber, text { fill: #000 !important; color: #000 !important; }'
+}}%%
+sequenceDiagram
+    participant U as User
+    participant C as MCP Client
+    participant AS as Authorization Server<br/>(https://example.ngrok-free.app)
+    participant AL as Authlete
+    participant MS as MCP Server<br/>(http://localhost:9001)
+
+    %% Initial MCP Server Access
+    rect rgb(255, 252, 252)
+        Note over C,MS: Initial MCP Server Access (Authentication Challenge)
+        C->>MS: POST /mcp (MCP Protocol)<br/>(without Authorization header)
+        MS-->>C: 401 Unauthorized<br/>WWW-Authenticate: Bearer<br/>resource_metadata="http://localhost:9001/.well-known/oauth-protected-resource/mcp"
+    end
+
+    %% MCP Protected Resource Metadata
+    rect rgb(248, 255, 248)
+        Note over C,MS: MCP Protected Resource Metadata Discovery
+        C->>MS: GET /.well-known/oauth-protected-resource/mcp
+        MS-->>C: 200 {authorization_servers:["https://example.ngrok-free.app"],<br/>resource:"http://localhost:9001/mcp",<br/>scopes_supported:["mcp.echo"]}
+    end
+
+    %% [1] OpenID Configuration Discovery
+    rect rgb(225, 232, 255)
+        Note over C,AL: [1] 🛠️【実装対象】
+        C->>AS: GET /.well-known/openid-configuration
+        AS->>AL: GET /service/configuration<br/>(authlete.service.getConfiguration)
+        AL-->>AS: 200 Service Configuration
+        AS-->>C: 200 {issuer:"https://example.ngrok-free.app",<br/>authorization_endpoint:"https://example.ngrok-free.app/authorize",<br/>token_endpoint:"https://example.ngrok-free.app/token",<br/>jwks_uri:"https://example.ngrok-free.app/jwks"}
+    end
+
+    %% [2]-[3] Authorization (CIMD resolved by Authlete)
+    rect rgb(250, 247, 255)
+        Note over U,AL: OAuth 2.1 Authorization Code + PKCE (CIMD)
+        U->>C: Start sign-in / connect MCP
+        rect rgb(226, 205, 245)
+            Note over C,AS: [2] 🛠️【実装対象】
+            C->>AS: GET /authorize?<br/>client_id=https://client.example/metadata.json&...
+            AS->>AL: POST /auth/authorization {parameters}<br/>(authlete.authorization.processRequest)
+            Note over AL: Detect URL client_id<br/>Fetch CIMD metadata<br/>Validate & persist client
+            AL-->>AS: 200 {action:"INTERACTION", ticket}
+            AS-->>C: 200 HTML (Login + Consent UI)
+        end
+        rect rgb(217, 191, 242)
+            Note over U,AS: [3] 🛠️【実装対象】
+            U-->>AS: POST /consent
+            AS->>AL: POST /auth/authorization/issue {ticket, subject}<br/>(authlete.authorization.issue)
+            AL-->>AS: 200 {action:"LOCATION", responseContent}
+            AS-->>C: 302 redirect_uri?code=AUTH_CODE
+        end
+    end
+
+    %% [4] Token Request
+    rect rgb(225, 245, 245)
+        Note over C,AS: [4] 🛠️【実装対象】
+        C->>AS: POST /token<br/>grant_type=authorization_code&code=AUTH_CODE&...
+        AS->>AL: POST /auth/token {parameters}<br/>(authlete.token.process)
+        Note over AL: Issue signed JWT access token<br/>iss=https://example.ngrok-free.app<br/>aud=http://localhost:9001/mcp<br/>scope=mcp.echo
+        AL-->>AS: 200 {action:"OK", responseContent}
+        AS-->>C: 200 {access_token:"eyJhbGciOiJSUzI1NiIs...", token_type:"Bearer"}
+    end
+
+    %% Resource Access (JWT Validation)
+    rect rgb(255, 250, 244)
+        Note over C,MS: MCP Protocol with JWT Protection
+        C->>MS: POST /mcp<br/>Authorization: Bearer eyJhbGciOi...
+        rect rgb(255, 233, 204)
+            Note over MS,AS: [1] 🛠️【実装対象】
+            MS->>AS: GET /.well-known/openid-configuration
+            AS->>AL: GET /service/configuration<br/>(authlete.service.getConfiguration)
+            AL-->>AS: 200 Service Configuration
+            AS-->>MS: 200 {issuer, jwks_uri}
+        end
+        rect rgb(255, 221, 179)
+            Note over MS,AS: [5] 🛠️【実装対象】
+            MS->>AS: GET /jwks
+            AS->>AL: GET /service/jwks/get<br/>(authlete.jwkSetEndpoint.serviceJwksGetApi)
+            AL-->>AS: 200 JWKS
+            AS-->>MS: 200 {keys:[...]}
+        end
+        Note over MS: Validate JWT<br/>Verify signature (kid)<br/>Check iss=https://example.ngrok-free.app<br/>Check aud=http://localhost:9001/mcp<br/>Check exp<br/>Check scope=mcp.echo
+        MS-->>C: 200 MCP Response
+    end
+```
 
 ## 具体的な実装方針
 
@@ -67,36 +177,68 @@ app.get('/authorize', async (c: Context) => {
 
   // implement authorization endpoint logic here
   const { authlete, serviceId } = c.var;
-  const parameters = c.req.url.split('?')[1] ?? '';
+  const { search } = new URL(c.req.url);
+  const parameters = search.startsWith('?') ? search.slice(1) : '';
   const authorizationRequest: AuthorizationRequest = {
-      parameters
-  };  
+    parameters
+  };
   const response: AuthorizationResponse = await authlete.authorization.processRequest({
-      serviceId: serviceId,
-      authorizationRequest
+    serviceId: serviceId,
+    authorizationRequest
   });
-  const action = response.action;
-  switch (action) {
+
+  const responseContent = response.responseContent ?? '';
+  c.header('Cache-Control', 'no-store');
+  c.header('Pragma', 'no-cache');
+
+  // Authlete からのアクションをもとに応答を生成する
+  switch (response.action) {
     case 'INTERNAL_SERVER_ERROR':
-        c.header('Content-Type', 'application/json');
-        return c.body(responseContent, 500);
+      c.header('Content-Type', 'application/json');
+      return c.body(responseContent, 500);
     case 'BAD_REQUEST':
-        c.header('Content-Type', 'application/json');
-        return c.body(responseContent, 400);
+      c.header('Content-Type', 'application/json');
+      return c.body(responseContent, 400);
     case 'LOCATION':
-        if (responseContent) {
-            return c.redirect(responseContent);
-        }
-        c.header('Content-Type', 'application/json');
-        return c.body('', 500);
+      if (responseContent) {
+        return c.redirect(responseContent);
+      }
+      c.header('Content-Type', 'application/json');
+      return c.body('', 500);
     case 'FORM':
-        c.header('Content-Type', 'text/html; charset=UTF-8');
-        return c.body(responseContent, 200);
+      c.header('Content-Type', 'text/html; charset=UTF-8');
+      return c.body(responseContent, 200);
     case 'INTERACTION':
-        ....
+      // ticket など必要な情報をセッションに保存する
+      const authorizationSession = response.ticket
+        ? {
+          ticket: response.ticket,
+          scopesToConsent: response.scopes
+            ?.map((scope) => scope.name)
+            .filter((scope): scope is string => Boolean(scope)) ?? [],
+        }
+        : undefined;
+      await c.var.session.update((prev) => ({
+        ...prev,
+        authorization: authorizationSession,
+      } satisfies AuthorizationSession));
+      // 同意画面を生成する
+      return renderConsent(c, response);
+    case 'NO_INTERACTION':
+      const errorResponse = await authlete.authorization.fail({
+        serviceId,
+        authorizationFailRequest: {
+          ticket: response.ticket!,
+          reason: 'SERVER_ERROR',
+          description: 'prompt=none is not supported in this sample server'
+        }
+      });
+      return handleFailAction(c, errorResponse);
+    default:
+      c.header('Content-Type', 'application/json');
+      return c.body('', 500);
   }
-}
-);
+});
 ```
 
 Authlete API の応答をどのように解析する必要があるかについては各 API ドキュメントを参照します。
@@ -131,7 +273,6 @@ import {
   consentHandler,
   jwksHandler,
   openIdConfigHandler,
-  sampleClientHandler,
   tokenHandler,
 } from './samples/handlers';
 
@@ -172,7 +313,7 @@ Forwarding に表示された URL をコピーし、以下の個所に反映さ�
 | issuer | [基本設定] > [詳細設定]> [発行者識別子] | `OAUTH_SERVER_ISSUER` |
 | authorization_endpoint | [エンドポイント] > [認可] > [一般] > [認可エンドポイントURL] | `OAUTH_SERVER_ISSUER`/authorize |
 |token_endpoint| [エンドポイント] > [トークン] > [一般] > [トークンエンドポイントURL] | `OAUTH_SERVER_ISSUER`/token |
-|jwks_uri| [キーマネージメント] > [認可サーバー] > [JWKセットエンドポイントのURI] | `OAUTH_SERVER_ISSUER`/jwks |
+|jwks_uri| [キーマネージメント] > [JWK Set] > [認可サーバー] > [JWKセットエンドポイントのURI] | `OAUTH_SERVER_ISSUER`/jwks |
 
 3. Authlete コンソールのサンプルクライアント [エンドポイント] > [基本設定] > [一般] > [リダイレクトURI] に `OAUTH_SERVER_ISSUER`/sample-client を追加
 
