@@ -111,7 +111,10 @@ sequenceDiagram
         U->>C: Start sign-in / connect MCP
         C->>AS: GET /authorize?<br/>client_id=https://client.example/metadata.json&...
         AS->>AL: [2] POST /auth/authorization {parameters}<br/>(authlete.authorization.processRequest)
-        Note over AL: Detect URL client_id<br/>Fetch CIMD metadata<br/>Validate & persist client
+        Note over AL: Check existing client registration<br/>If registered, check metadata cache expiration<br/>Check cimdAllowlist
+        AL->>C: GET client_id (URL)
+        C-->>AL: 200 Client Metadata (JSON)
+        Note over AL: Verify metadata client_id matches URL<br/>Ensure no symmetric crypto is used<br/>Apply policy
         AL-->>AS: 200 {action:"INTERACTION", ticket}
         Note right of AS: Save ticket to session
         AS->>U: Login + Consent UI (scope=mcp.echo)
