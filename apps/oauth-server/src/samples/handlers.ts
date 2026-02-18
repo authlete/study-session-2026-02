@@ -110,10 +110,12 @@ export const consentHandler = async (c: Context) => {
             scopes: data.authorization.scopesToConsent
         }
     });
+    const responseContent = issueResponse.responseContent ?? '';
+    
     switch (issueResponse.action) {
         case 'LOCATION':
-            if (issueResponse.responseContent) {
-                return c.redirect(issueResponse.responseContent);
+            if (responseContent) {
+                return c.redirect(responseContent);
             }
             return c.json(
                 {
@@ -123,13 +125,8 @@ export const consentHandler = async (c: Context) => {
                 500,
             );
         case 'BAD_REQUEST':
-            return c.json(
-                {
-                    error: 'server_error',
-                    error_description: issueResponse.resultMessage || 'Failed to issue authorization'
-                },
-                500,
-            );
+            c.header('Content-Type', 'application/json');
+            return c.body(responseContent, 400);
         default:
             return c.json(
                 {
