@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 
+const PREFERRED_USERNAME_KEYS = ['preferred_username']
 const FIRST_NAME_KEYS = ['given_name'];
 const LAST_NAME_KEYS = ['family_name'];
 
@@ -23,7 +24,7 @@ export function registerGreetTool(server: McpServer) {
     async (_input, extra) => {
       const payload = (extra.authInfo?.extra?.payload ?? {}) as Record<string, unknown>;
 
-      let preferredUsername = findStringClaim(payload, ['preferred_username', 'preffered_username']);
+      let preferredUsername = findStringClaim(payload, PREFERRED_USERNAME_KEYS);
       if (!preferredUsername) {
         const firstName = findStringClaim(payload, FIRST_NAME_KEYS);
         const lastName = findStringClaim(payload, LAST_NAME_KEYS);
