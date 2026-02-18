@@ -56,7 +56,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=CCVfO91zGcjgUkatssaNwSsGG-NYTbFlbO8ORSEkFLQ # Repla
 
 ![add scope for mcp server](../img/01-setup-authlete/scope-setting.png)
 
-> Node: ここで設定した scope は .env の `MCP_SCOPES` に対応します。サンプル MCP サーバーの実装はこの値を 401 応答に含まれる `WWW-Authentication ヘッダー` の `scope`, Protected Resource Metadata の `supported_scopes` の値として利用します。
+> Note: ここで設定した scope は .env の `MCP_SCOPES` に対応します。サンプル MCP サーバーの実装はこの値を 401 応答に含まれる `WWW-Authentication ヘッダー` の `scope`, Protected Resource Metadata の `supported_scopes` の値として利用します。
 
 ### JWKセットの内容
 

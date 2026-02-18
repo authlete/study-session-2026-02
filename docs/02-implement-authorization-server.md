@@ -47,7 +47,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=your_authlete_service_accesstoken_here # Replace wi
 | [4] | POST | `/token` | トークンエンドポイント | クライアントアプリケーションのトークンリクエストを処理するエンドポイント | `POST /api/{serviceId}/auth/token` | `authlete.token.process({ serviceId, tokenRequest })` | https://docs.authlete.com/en/shared/latest#post-/api/-serviceId-/auth/token |
 | [5] | GET | `/jwks` | JWK セットエンドポイント | トークン署名検証用の公開鍵を JWKS 形式で公開するエンドポイント | `GET /api/{serviceId}/service/jwks/get` | `authlete.jwkSetEndpoint.serviceJwksGetApi({ serviceId })` | https://docs.authlete.com/en/shared/latest#get-/api/-serviceId-/service/jwks/get |
 
-各エンドポイントとでは、内部的に Authlete API の列に示した API を呼び出し、認可処理を実装します。認可サーバーは Authlete からの応答を解析し、認可サーバー独自のカスタマイズを実施したうえで、クライアントに結果を返却します。
+各エンドポイントでは、内部的に Authlete API の列に示した API を呼び出し、認可処理を実装します。認可サーバーは Authlete からの応答を解析し、認可サーバー独自のカスタマイズを実施したうえで、クライアントに結果を返却します。
 
 ユーザーが同意をキャンセルした場合など、エラー応答を返却したい場合、採番対象外として以下の API を利用します。
 
