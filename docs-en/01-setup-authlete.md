@@ -26,7 +26,7 @@ Save the access token in the `.env` file as `AUTHLETE_SERVICE_ACCESSTOKEN`.
 
 From the created service's [All Clients] screen, save the `Service ID` and `Cluster URL` as `AUTHLETE_SERVICE_APIKEY` and `AUTHLETE_BASE_URL`, respectively.
 
-![all clients](../img/01-setup-authlete/all-clients.png)
+![all clients](../img/01-setup-authlete/all-clients-en.png)
 
 Your `.env` file should look like this:
 
