@@ -344,8 +344,10 @@ HTTPS で公開する方法については `mkcert` などで自己署名証明�
 README にある通りに ngrok のセットアップを実施後に、`ngrok http 9000` コマンドを実行します。
 Forwarding に表示された URL をコピーし、以下の個所に反映させます。
 
-1. `.env` の `OAUTH_SERVER_ISSUER`
-2. Authlete コンソールの対象サービス内の各種エンドポイント設定
+1. `.env` ファイルの `OAUTH_SERVER_ISSUER`
+2. Authlete コンソールの対象サービス内の各種エンドポイント設定※
+
+※ クライアント設定ではなくサービス設定を更新する必要があります。クライアント設定を開いている場合、一度コンソールトップ (https://console.authlete.com/) に戻り、対象組織 > 対象サービス から [すべてのクライアント] 画面に移動し [サービス設定] をクリックしてください。
 
 | メタデータ内のプロパティ | 設定箇所 | 設定する値 |
 | ---------------------- | ------- | --------- |
@@ -356,13 +358,36 @@ Forwarding に表示された URL をコピーし、以下の個所に反映さ�
 
 3. Authlete コンソールのサンプルクライアント [エンドポイント] > [基本設定] > [一般] > [リダイレクトURI] に `OAUTH_SERVER_ISSUER`/sample-client を追加
 
-全ての設定が終わったら、`npm run dev` コマンドで開発用サーバーを再起動します。
+例えば ngrok で `https://example.ngrok-free.dev` の URL が公開されている場合、`OAUTH_SERVER_ISSUER` には `https://example.ngrok-free.dev` を、[認可エンドポイントURL] には `https://example.ngrok-free.dev/authorize` を指定します。
 
-`OAUTH_SERVER_ISSUER`/.well-known/openid-configuration にアクセスをし、`issuer` `authorization_endpoint`, `token_endpoint`, `jwks_uri` が設定した値に更新されていることを確認します。
-
-また、`OAUTH_SERVER_ISSUER`/sample-client にアクセスしトークン取得が正常に実施できることを確認します。
 
 > ※開発中のワークアラウンドとしてメタデータの応答 (例えば authorization_endpoint) を編集し、http スキーマに書き換えるといった手法もありますが、今回は素直に HTTPS での公開をします。
+
+## 最終確認
+
+全ての設定が終わったら、`npm run dev` コマンドで開発用サーバーを再起動します。
+
+以下を順に確認してください。
+
+### 1. MCP サーバーの Protected Resource Metadata
+
+MCP サーバーの Protected Resource Metadata (http://localhost:9001/.well-known/oauth-protected-resource/mcp) に含まれる `authorization_servers` の値が、HTTPS で公開している認可サーバーの URL (https://example.ngrok-free.dev など) になっているか確認します。
+MCP クライアントはこの情報を利用し、MCP サーバーがどの認可サーバーで保護されているかを確認します。
+正しい値になっていない場合 `.env` の `OAUTH_SERVER_ISSUER` を修正します。
+
+### 2. 認可サーバーの OpenID Configuration 
+
+認可サーバーの OpenID Configuration (http://localhost:9000/.well-known/openid-configuration) に含まれる以下のエンドポイントが、実際に HTTPS で公開している認可サーバーの URL になっているか確認します。
+
+  * `issuer`
+  * `authorization_endpoint`
+  * `token_endpoint`
+  * `jwks_uri`
+ 
+`client_id_metadata_document_supported` が `true` になっているか確認します。
+
+MCP クライアントは上記値をもとに認可リクエストを構築するため、値が間違っていると誤った認可リクエストを送信してしまいます。
+値が間違っている場合 `HTTPS での公開` セクションを参考に Authlete コンソールからサービス設定を更新してください。
 
 認可サーバーの実装はこれで完了です。
 

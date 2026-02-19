@@ -72,6 +72,9 @@ Connection logs for MCP server startup are shown in the OUTPUT panel. Check them
 
 A warning such as `[warning] Error fetching authorization server metadata: Error: Failed to fetch authorization server metadata from https://<ngrok-domain>/.well-known/oauth-authorization-server: 404 404 Not Found` is not a problem in this workshop because that endpoint is intentionally not implemented. VS Code falls back to `/.well-known/openid-configuration`.
 
+If metadata values such as `authorization_servers` are incorrect, unintended endpoints may open during the authorization flow.
+Review settings using [Authorization Server Implementation ## Final Check](./02-implement-authorization-server.md#final-check).
+
 ### Authorization Flow Started but Not Completed
 
 During repeated debugging, the authorization flow can remain stuck in an unfinished state.

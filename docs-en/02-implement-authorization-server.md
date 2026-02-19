@@ -328,7 +328,9 @@ After setting up ngrok as described in README, run `ngrok http 9000`.
 Copy the URL shown in Forwarding and apply it to the following locations.
 
 1. `OAUTH_SERVER_ISSUER` in `.env`
-2. Endpoint settings in the target service on the Authlete console
+2. Endpoint settings in the target service on the Authlete console *
+
+* You must update service settings, not client settings. If you are on a client settings page, go back to the console top (https://console.authlete.com/), then open your organization > target service > [All Clients] and click [Service Settings].
 
 | Property in metadata | Setting location | Value to set |
 | -------------------- | ---------------- | ------------ |
@@ -339,13 +341,35 @@ Copy the URL shown in Forwarding and apply it to the following locations.
 
 3. In the Authlete console sample client, add `OAUTH_SERVER_ISSUER`/sample-client to [Endpoints] > [Basic Settings] > [General] > [Redirect URI]
 
-After updating all settings, restart the development server with `npm run dev`.
-
-Access `OAUTH_SERVER_ISSUER`/.well-known/openid-configuration and confirm that `issuer`, `authorization_endpoint`, `token_endpoint`, and `jwks_uri` are updated to your configured values.
-
-Also access `OAUTH_SERVER_ISSUER`/sample-client and confirm token acquisition works successfully.
+For example, if ngrok publishes `https://example.ngrok-free.dev`, set `OAUTH_SERVER_ISSUER` to `https://example.ngrok-free.dev` and set [Authorization Endpoint URL] to `https://example.ngrok-free.dev/authorize`.
 
 > * As a development workaround, you could rewrite metadata responses (for example `authorization_endpoint`) to `http`, but this workshop intentionally proceeds with HTTPS publishing.
+
+## Final Check
+
+After updating all settings, restart the development server with `npm run dev`.
+
+Check the following in order.
+
+### 1. Protected Resource Metadata on the MCP server
+
+Confirm that `authorization_servers` in MCP server Protected Resource Metadata (`http://localhost:9001/.well-known/oauth-protected-resource/mcp`) points to your HTTPS authorization server URL (for example `https://example.ngrok-free.dev`).
+MCP clients use this value to discover which authorization server protects the MCP server.
+If the value is incorrect, update `OAUTH_SERVER_ISSUER` in `.env`.
+
+### 2. OpenID Configuration on the authorization server
+
+Confirm the following values in authorization server OpenID Configuration (`http://localhost:9000/.well-known/openid-configuration`) all point to your HTTPS authorization server URL:
+
+- `issuer`
+- `authorization_endpoint`
+- `token_endpoint`
+- `jwks_uri`
+
+Also confirm `client_id_metadata_document_supported` is `true`.
+
+MCP clients build authorization requests from these values, so incorrect values can cause authorization requests to be sent to unintended endpoints.
+If values are incorrect, update service settings in the Authlete console based on the `Publish over HTTPS` section.
 
 Authorization server implementation is now complete.
 

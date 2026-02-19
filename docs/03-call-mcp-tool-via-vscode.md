@@ -72,6 +72,9 @@ MCP サーバーとの接続時のログは OUTPUT Panel に表示されるの�
 
 なお、`[warning] Error fetching authorization server metadata: Error: Failed to fetch authorization server metadata from https://<ngrok-domain>/.well-known/oauth-authorization-server: 404 404 Not Found` のように `oauth-authorization-server` へのリクエストが 404 となるのは、今回は実装していないので問題ありません。`/.well-known/openid-configuration` にフォールバックされます。
 
+またメタデータ内の `authorization_servers` などの値に不備があると、認可フローの動作時に意図しないエンドポイントが開かれる場合があります。
+[認可サーバーの実装##最終確認](./02-implement-authorization-server.md#最終確認) を参考に設定不備がないか確認してください。
+
 ### 認可フローが開始したものの終了していない
 
 なんどもデバッグを繰り返すうちに、認可フローが終わっていない状態で止まってしまうことがあります。
