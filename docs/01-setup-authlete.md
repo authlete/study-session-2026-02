@@ -90,17 +90,16 @@ Authlete のサービス設定はこれで完了です。
 
 1. Authlete コンソールのサービス設定または [すべてのクライアント] の右上にある [クライアントの新規作成] ボタンをクリックします。
 2. 以下のパラメーターでクライアントを登録します。
-  1. クライアント名: Sample Client
-  2. クライアント ID: sample-client
-  3. クライアントの詳細情報: Sample Client for testing
-  4. クライアントタイプ: 公開
-  5. アプリケーションタイプ: Web
+    1. クライアント名: Sample Client
+    2. クライアント ID: sample-client
+    3. クライアントの詳細情報: Sample Client for testing
+    4. クライアントタイプ: 公開
+    5. アプリケーションタイプ: Web
 
 ![create new client](../img/01-setup-authlete/create-new-client.png)
 
-3. クライアント設定の [エンドポイント] > [基本設定] > [リダイレクトURI] に `http://localhost:9000/sample-client` を登録します。
+3. クライアント設定の [基本設定] > [一般] > [リダイレクトURI] に `http://localhost:9000/sample-client` を登録します。
 
-![add redirect uri](../img/01-setup-authlete/redirect-uri.png)
 
 4. クライアント設定の [トークンとクレーム] > [IDトークン] > [IDトークン署名アルゴリズム] を `RS256` に設定し、変更を保存をクリックします。 
 
