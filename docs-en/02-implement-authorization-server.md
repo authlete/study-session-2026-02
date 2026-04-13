@@ -154,7 +154,7 @@ sequenceDiagram
 
 ## Implementation Approach
 
-The file [index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint.
+The file [apps/oauth-server/src/index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint.
 
 The implementation flow is:
 

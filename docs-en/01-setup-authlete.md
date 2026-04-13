@@ -101,6 +101,8 @@ Register a sample client for verifying the authorization server behavior.
 
 3. In the client settings under [Basic Settings] > [General] > [Redirect URIs], add `http://localhost:9000/sample-client`.
 
+![add redirect uri](../img/01-setup-authlete/redirect-uri-en.png)
+
 4. In the client settings under [Token & Claims] > [ID Token] > [ID Token Signing Algorithm], set `RS256` and click Save Changes.
 
 Client setup is complete.

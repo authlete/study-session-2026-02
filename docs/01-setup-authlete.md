@@ -100,6 +100,7 @@ Authlete のサービス設定はこれで完了です。
 
 3. クライアント設定の [基本設定] > [一般] > [リダイレクトURI] に `http://localhost:9000/sample-client` を登録します。
 
+![add redirect uri](../img/01-setup-authlete/redirect-uri.png)
 
 4. クライアント設定の [トークンとクレーム] > [IDトークン] > [IDトークン署名アルゴリズム] を `RS256` に設定し、変更を保存をクリックします。 
 

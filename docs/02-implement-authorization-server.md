@@ -171,7 +171,7 @@ sequenceDiagram
 
 ## 具体的な実装方針
 
-[index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。
+[apps/oauth-server/src/index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。
 
 実装方針としては以下の通りです。
 
