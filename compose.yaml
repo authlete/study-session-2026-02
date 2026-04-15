@@ -1,0 +1,19 @@
+services:
+  server:
+    hostname: server
+    build:
+      context: .
+    volumes:
+      - ./:/opt/server
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    working_dir: /opt/server
+    command: npm run dev
+
+  ngrok:
+    hostname: ngrok
+    image: ngrok/ngrok
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    command: http server:9000
