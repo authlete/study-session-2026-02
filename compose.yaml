@@ -1,14 +1,14 @@
 services:
   server:
     hostname: server
-    build:
-      context: .
+    image: node
     volumes:
       - ./:/opt/server
     ports:
       - "9000:9000"
       - "9001:9001"
     working_dir: /opt/server
+    entrypoint: ["./docker-entrypoint.sh"]
 
   ngrok:
     hostname: ngrok
