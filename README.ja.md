@@ -13,6 +13,8 @@
 - [ngrok CLI](https://ngrok.com/download): 認可サーバーを HTTPS で公開するために必要です。他のツール、たとえば GitHub Codespaces のポートフォワーディングなどを利用しても構いません。
 - [Visual Studio Code](https://code.visualstudio.com/): MCP サーバーに接続するためのクライアントとして利用します。コードの実装はお好きなエディタで実装して構いません。
 - [GitHub Copilot](https://github.com/features/copilot/) のフリープラン (またはそれ以上のプラン) へのサインアップ: VS Code と MCP サーバーの接続確認に利用します。CIMD に対応した他のクライアントでも構いません。
+- Docker: Docker コンテナで認可サーバーと MCP サーバーを起動する場合は必要です.
+- Docker Compose
 
 ### Node.js のインストールと動作確認
 
@@ -88,6 +90,16 @@ ngrok http 9000
 ```
 
 Forwarding に表示された URL にアクセスし、ローカルと同様に `{"service":"oauth-server","status":"ok","note":"Development stub running over http"}` のレスポンスが得られれば準備完了です。
+
+### Docker を利用する
+
+Docker コンテナで認可サーバーと MCP サーバーを起動することができます。
+
+```
+cp .env.example .env
+docker compose build
+docker up
+```
 
 ### (オプション) ngrok の URL を固定する
 

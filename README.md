@@ -17,6 +17,8 @@ Before participating in the hands-on session, please install the following tools
 - [ngrok CLI](https://ngrok.com/download): Required to expose the authorization server over HTTPS.
 - [Visual Studio Code](https://code.visualstudio.com/): Used as the MCP client. You can implement the code in any editor you like.
 - Sign up for the free (or higher) plan of [GitHub Copilot](https://github.com/features/copilot/): Used to confirm the connection between VS Code and the MCP server. Any other client that supports CIMD is also fine.
+- Docker: Required for Docker-based deployments of the authorization and MCP servers.
+- Docker Compose
 
 ### Installing Node.js and Verifying the Setup
 
@@ -97,6 +99,16 @@ ngrok http 9000
 Access the URL shown under `Forwarding`.  
 If you receive the same response as locally,  
 `{"service":"oauth-server","status":"ok","note":"Development stub running over http"}`, the setup is complete.
+
+### Using Docker
+
+You can run the authorization server and MCP server in Docker containers.
+
+```
+cp .env.example .env
+docker compose build
+docker up
+```
 
 ### (Optional) Fixing the ngrok URL
 
