@@ -104,10 +104,20 @@ If you receive the same response as locally,
 
 You can run the authorization server and MCP server in Docker containers.
 
+Create .env file and edit it.
+
 ```
 cp .env.example .env
-docker compose build
-docker up
+vi .env
+# Edit ngrok configuration
+NGROK_AUTHTOKEN=*****
+NGROK_DOMAIN=example.ngrok-free.dev
+```
+
+Start containers.
+
+```
+docker compose up
 ```
 
 ### (Optional) Fixing the ngrok URL

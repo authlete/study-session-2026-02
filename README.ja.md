@@ -95,10 +95,20 @@ Forwarding に表示された URL にアクセスし、ローカルと同様に 
 
 Docker コンテナで認可サーバーと MCP サーバーを起動することができます。
 
+.env ファイルを作成して編集します。
+
 ```
 cp .env.example .env
-docker compose build
-docker up
+vi .env
+# Edit ngrok configuration
+NGROK_AUTHTOKEN=*****
+NGROK_DOMAIN=example.ngrok-free.dev
+```
+
+コンテナを起動します。
+
+```
+docker compose up
 ```
 
 ### (オプション) ngrok の URL を固定する
