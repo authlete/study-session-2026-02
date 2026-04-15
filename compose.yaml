@@ -9,7 +9,6 @@ services:
       - "9000:9000"
       - "9001:9001"
     working_dir: /opt/server
-    command: npm run dev
 
   ngrok:
     hostname: ngrok
