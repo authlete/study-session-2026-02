@@ -16,4 +16,4 @@ WORKDIR ${work_dir}/
 RUN npm install
 
 EXPOSE 9000 9001
-
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
