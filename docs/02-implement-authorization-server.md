@@ -171,7 +171,7 @@ sequenceDiagram
 
 ## 具体的な実装方針
 
-[index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。
+[apps/oauth-server/src/index.ts](/apps/oauth-server/src/index.ts) に、各エンドポイントの空実装があります。ハンズオンでは、各エンドポイントを実装していきます。
 
 実装方針としては以下の通りです。
 
@@ -356,7 +356,7 @@ Forwarding に表示された URL をコピーし、以下の個所に反映さ�
 |token_endpoint| [エンドポイント] > [トークン] > [一般] > [トークンエンドポイントURL] | `OAUTH_SERVER_ISSUER`/token |
 |jwks_uri| [キーマネージメント] > [JWK Set] > [認可サーバー] > [JWKセットエンドポイントのURI] | `OAUTH_SERVER_ISSUER`/jwks |
 
-3. Authlete コンソールのサンプルクライアント [エンドポイント] > [基本設定] > [一般] > [リダイレクトURI] に `OAUTH_SERVER_ISSUER`/sample-client を追加
+3. Authlete コンソールのサンプルクライアント [基本設定] > [一般] > [リダイレクトURI] に `OAUTH_SERVER_ISSUER`/sample-client を追加
 
 例えば ngrok で `https://example.ngrok-free.dev` の URL が公開されている場合、`OAUTH_SERVER_ISSUER` には `https://example.ngrok-free.dev` を、[認可エンドポイントURL] には `https://example.ngrok-free.dev/authorize` を指定します。
 

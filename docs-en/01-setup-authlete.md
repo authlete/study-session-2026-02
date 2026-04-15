@@ -91,15 +91,15 @@ Register a sample client for verifying the authorization server behavior.
 
 1. In the Authlete console service settings or in [All Clients], click the [Create New Client] button at the top right.
 2. Register the client with the following parameters.
-  1. Client name: Sample Client
-  2. Client ID: sample-client
-  3. Client description: Sample Client for testing
-  4. Client type: Public
-  5. Application type: Web
+    1. Client name: Sample Client
+    2. Client ID: sample-client
+    3. Client description: Sample Client for testing
+    4. Client type: Public
+    5. Application type: Web
 
 ![create new client](../img/01-setup-authlete/create-new-client-en.png)
 
-3. In the client settings under [Endpoints] > [Basic Settings] > [Redirect URIs], add `http://localhost:9000/sample-client`.
+3. In the client settings under [Basic Settings] > [General] > [Redirect URIs], add `http://localhost:9000/sample-client`.
 
 ![add redirect uri](../img/01-setup-authlete/redirect-uri-en.png)
 

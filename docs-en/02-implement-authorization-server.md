@@ -154,7 +154,7 @@ sequenceDiagram
 
 ## Implementation Approach
 
-The file [index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint.
+The file [apps/oauth-server/src/index.ts](/apps/oauth-server/src/index.ts) contains stub implementations for each endpoint. In this hands-on, you will implement each endpoint.
 
 The implementation flow is:
 
@@ -339,7 +339,7 @@ Copy the URL shown in Forwarding and apply it to the following locations.
 |token_endpoint| [Endpoints] > [Token] > [General] > [Token Endpoint URL] | `OAUTH_SERVER_ISSUER`/token |
 |jwks_uri| [Key Management] > [JWK Set] > [Authorization Server] > [JWK Set Endpoint URI] | `OAUTH_SERVER_ISSUER`/jwks |
 
-3. In the Authlete console sample client, add `OAUTH_SERVER_ISSUER`/sample-client to [Endpoints] > [Basic Settings] > [General] > [Redirect URI]
+3. In the Authlete console sample client, add `OAUTH_SERVER_ISSUER`/sample-client to [Basic Settings] > [General] > [Redirect URI]
 
 For example, if ngrok publishes `https://example.ngrok-free.dev`, set `OAUTH_SERVER_ISSUER` to `https://example.ngrok-free.dev` and set [Authorization Endpoint URL] to `https://example.ngrok-free.dev/authorize`.
 
