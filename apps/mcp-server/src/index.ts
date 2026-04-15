@@ -4,6 +4,7 @@ import { serve } from '@hono/node-server';
 import { StreamableHTTPTransport } from '@hono/mcp';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Hono } from 'hono';
+import { logger } from 'hono/logger';
 
 import { PORT, config } from './config.js';
 import { createMcpRequestHandler as mcpRequestHandler } from './handlers/handle-mcp-request.js';
@@ -22,6 +23,7 @@ const app = new Hono();
 
 const bearerGuard = createMcpGuard(config);
 
+app.use('*', logger());
 app.use('/mcp', bearerGuard);
 
 app.get('/.well-known/oauth-protected-resource/mcp', (c) =>

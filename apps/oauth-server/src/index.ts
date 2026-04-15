@@ -1,6 +1,7 @@
 import 'dotenv/config';
 
 import { Hono, type Context } from 'hono';
+import { logger } from 'hono/logger';
 import { cors } from 'hono/cors'
 import { type Session, useSession, useSessionStorage, type Storage } from '@hono/session';
 import { serve } from '@hono/node-server';
@@ -58,6 +59,7 @@ const corsHandler = cors({
   allowHeaders: ["DPoP", "Authorization", "Content-Type"]
 })
 
+app.use('*', logger());
 app.use('/token', corsHandler)
 app.use('/userinfo', corsHandler)
 app.use('/jwks', cors())
