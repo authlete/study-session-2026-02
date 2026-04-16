@@ -41,7 +41,7 @@ AUTHLETE_SERVICE_ACCESSTOKEN=CCVfO91zGcjgUkatssaNwSsGG-NYTbFlbO8ORSEkFLQ # Repla
 
 ### Grant Types
 
-In [Endpoints] > [Basic Settings] > [General] > [Supported Grant Types], select only `AUTHORIZATION_CODE`, `REFRESH_TOKEN`, and `DEVICE_CODE`, then click Save Changes.
+In [Endpoints] > [Global Settings] > [General] > [Supported Grant Types], select only `AUTHORIZATION_CODE`, `REFRESH_TOKEN`, and `DEVICE_CODE`, then click Save Changes.
 
 > Note: You won't implement `DEVICE_CODE` in this hands-on, but VS Code metadata specifies `urn:ietf:params:oauth:grant-type:device_code` in `grant_types`, so it must be enabled. You can override unsupported grant types with a [Client Metadata Policy](https://qiita.com/TakahikoKawasaki/items/e4898a31f3ae52be3eff), but at the time of this session there is no setting in the console, so we take the above approach.
 
