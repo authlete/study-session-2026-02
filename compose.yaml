@@ -15,4 +15,4 @@ services:
     image: ngrok/ngrok
     environment:
       - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
-    command: http server:9000
+    command: http --url=${NGROK_DOMAIN} server:9000
